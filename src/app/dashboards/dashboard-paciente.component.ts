@@ -26,19 +26,16 @@ import { PacienteService } from '../core/services/paciente.service';
   ]
 })
 export class DashboardPacienteComponent implements OnInit {
-  // Datos del paciente
   paciente: Paciente | undefined;
   citas: Consulta[] = [];
   citasProximas: Consulta[] = [];
   historialCitas: Consulta[] = [];
   recetas: Receta[] = [];
 
-  // Estados de UI
   cargando = true;
   mensajeCita: string | null = null;
   mostrarFormularioCita = false;
 
-  // Opciones para el formulario
   tiposCita = [
     { label: 'General', value: 'general' },
     { label: 'Especialidad', value: 'especialidad' },
@@ -112,7 +109,6 @@ export class DashboardPacienteComponent implements OnInit {
     this.historialCitas = [];
   }
 
-  // Métodos para el formulario de citas
   abrirFormularioCita() {
     this.mostrarFormularioCita = true;
     this.nuevaCita = { tipo: '', horario: '' };
