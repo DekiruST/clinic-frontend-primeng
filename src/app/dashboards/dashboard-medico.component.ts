@@ -14,7 +14,7 @@ import { CardModule } from "primeng/card";
     CommonModule,
     CardModule,
     AvatarModule,
-    TabViewModule,      // ✅ FALTABA ESTE
+    TabViewModule,      
     NgIf,
     NgFor
   ],
