@@ -1,0 +1,85 @@
+<div style="margin-bottom: 1rem">
+  <button pButton label="Ir al inicio" (click)="goHome()"></button>
+  <button pButton label="Cerrar sesión" class="p-button-danger" (click)="logout()"></button>
+</div>
+
+<p-tabView>
+  <p-tabPanel header="Citas">
+    <p-table [value]="consultas">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Paciente</th>
+          <th>Motivo</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-consulta>
+        <tr>
+          <td>{{ consulta.paciente }}</td>
+          <td>{{ consulta.motivo }}</td>
+          <td>{{ consulta.fecha }}</td>
+          <td>
+            <button pButton label="Editar" (click)="editarConsulta(consulta)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-tabPanel>
+
+  <p-tabPanel header="Expedientes">
+    <ul *ngIf="expedientes.length; else sinExpedientes">
+      <li *ngFor="let exp of expedientes">
+        <b>Paciente #{{ exp.id_paciente }}</b>
+        <div><b>Antecedentes:</b> {{ exp.antecedentes }}</div>
+        <div><b>Historial Clínico:</b> {{ exp.historial_clinico }}</div>
+        <!-- <button (click)="editarExpediente(exp)">Editar</button> -->
+      </li>
+    </ul>
+    <ng-template #sinExpedientes>
+      <span>No hay expedientes disponibles.</span>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>
+
+<!-- Modal nativo de edición -->
+<!-- Modal nativo de edición -->
+<div *ngIf="consultaSeleccionada" style="
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;
+">
+  <div style="background: white; padding: 2rem; border-radius: 12px; min-width: 300px;">
+    <h3>Editar Consulta</h3>
+    <form (ngSubmit)="guardarEdicionConsulta()" #f="ngForm">
+      
+      <!-- Diagnóstico (motivo) -->
+      <label>Motivo:</label>
+      <input [(ngModel)]="consultaSeleccionada.diagnostico" name="diagnostico" required>
+      <br>
+
+      <!-- Fecha y hora -->
+      <label>Fecha:</label>
+      <input type="datetime-local" [(ngModel)]="consultaSeleccionada.horario" name="horario" required>
+      <br>
+
+      <!-- Tipo -->
+      <label>Tipo:</label>
+      <input [(ngModel)]="consultaSeleccionada.tipo" name="tipo" required>
+      <br>
+
+      <!-- Costo -->
+      <label>Costo:</label>
+      <input type="number" [(ngModel)]="consultaSeleccionada.costo" name="costo" required>
+      <br>
+
+      <!-- id_consultorio e id_paciente como campos ocultos o readonly -->
+      <input type="hidden" [(ngModel)]="consultaSeleccionada.id_consultorio" name="id_consultorio">
+      <input type="hidden" [(ngModel)]="consultaSeleccionada.id_paciente" name="id_paciente">
+
+      <!-- Botones -->
+      <br>
+      <button type="submit" pButton label="Guardar"></button>
+      <button type="button" pButton label="Cancelar" class="p-button-secondary" (click)="cancelarEdicion()"></button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="dashboard-wrapper">
+  <!-- Citas -->
+  <p-card header="📅 Todas las Citas" class="card-citas">
+    @if (citas.length > 0) {
+      <p-table [value]="citas" 
+               [responsiveLayout]="'scroll'" 
+               class="p-datatable-sm tabla-citas"
+               styleClass="p-datatable-gridlines">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="col-fecha">Fecha</th>
+            <th class="col-tipo">Tipo</th>
+            <th class="col-medico">Médico</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-cita>
+          <tr>
+            <td class="col-fecha">
+              <span class="fecha-destacada">{{ cita.horario | date: 'mediumDate' }}</span>
+              <span class="hora">{{ cita.horario | date: 'shortTime' }}</span>
+            </td>
+            <td class="col-tipo">
+              <span class="badge-tipo" [ngClass]="{
+                'badge-consulta': cita.tipo === 'Consulta',
+                'badge-urgencia': cita.tipo === 'Urgencia'
+              }">
+                {{ cita.tipo }}
+              </span>
+            </td>
+            <td class="col-medico">
+              <div class="medico-info">
+                <i class="pi pi-user-md"></i>
+                {{ cita.nombreMedico ? 'Dr. ' + cita.nombreMedico : 'Sin asignar' }}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    } @else {
+      <div class="empty-state">
+        <i class="pi pi-calendar"></i>
+        <p>No hay citas registradas.</p>
+      </div>
+    }
+  </p-card>
+
+  <!-- Expedientes -->
+  <p-card header="📁 Expedientes" class="card-expedientes">
+    @if (expedientes.length > 0) {
+      <div class="expediente-list">
+        @for (exp of expedientes; track exp.id_paciente) {
+          <div class="expediente-item">
+            <div class="expediente-header">
+              <p-avatar [label]="exp.id_paciente.toString()" 
+                       [style]="{ backgroundColor: '#607D8B', color: '#fff' }"
+                       size="large"
+                       shape="circle">
+              </p-avatar>
+              <h3>Paciente #{{ exp.id_paciente }}</h3>
+            </div>
+            
+            <div class="expediente-content">
+              <div class="expediente-field">
+                <label>Antecedentes:</label>
+                <p>{{ exp.antecedentes || 'N/A' }}</p>
+              </div>
+              
+              <div class="expediente-field">
+                <label>Historial Clínico:</label>
+                <p>{{ exp.historial_clinico || 'N/A' }}</p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <i class="pi pi-folder-open"></i>
+        <p>No hay expedientes disponibles.</p>
+      </div>
+    }
+  </p-card>
+</div>

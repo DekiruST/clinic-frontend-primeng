@@ -1,0 +1,17 @@
+<h2>Solicitar Cita</h2>
+<form [formGroup]="citaForm" (ngSubmit)="solicitarCita()">
+  <label>Especialidad:</label>
+  <input formControlName="especialidad" type="text" required>
+
+  <label>Descripción:</label>
+  <textarea formControlName="descripcion" required></textarea>
+
+ <label>Horario (fecha y hora):</label>
+<input type="datetime-local" [(ngModel)]="nuevaCita.horario" name="horario" required />
+
+  <button type="submit" [disabled]="citaForm.invalid">Enviar solicitud</button>
+</form>
+
+<div *ngIf="mensaje">
+  {{ mensaje }}
+</div>

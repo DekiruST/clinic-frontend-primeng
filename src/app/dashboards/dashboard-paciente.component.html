@@ -1,0 +1,142 @@
+<div class="dashboard-wrapper">
+  <!-- Loading Indicator -->
+  <p-progressSpinner *ngIf="cargando" class="loader-center"></p-progressSpinner>
+
+  <!-- Patient Welcome Card -->
+  <p-card header="Bienvenido Paciente" class="welcome-card">
+    <div class="patient-info">
+      <p><strong>Nombre:</strong> {{ paciente?.nombre }}</p>
+      <p><strong>Última visita:</strong>
+        {{ historialCitas.length ? (historialCitas[0].horario | date:'short') : 'Sin citas previas' }}
+      </p>
+    </div>
+    <button
+      pButton
+      type="button"
+      icon="{{ mostrarFormularioCita ? 'pi pi-times' : 'pi pi-calendar-plus' }}"
+      label="{{ mostrarFormularioCita ? 'Cancelar' : 'Solicitar cita' }}"
+      (click)="mostrarFormularioCita = !mostrarFormularioCita"
+      [class]="mostrarFormularioCita ? 'p-button-secondary' : 'p-button-success'"
+      class="appointment-btn"
+    ></button>
+  </p-card>
+
+  <!-- Appointment Message -->
+  <div *ngIf="mensajeCita" class="message-container" [ngClass]="{
+    'success-message': mensajeCita.includes('✅'),
+    'error-message': mensajeCita.includes('❌')
+  }">
+    {{ mensajeCita }}
+  </div>
+
+  <!-- Appointment Form -->
+  <p-card *ngIf="mostrarFormularioCita" class="appointment-form">
+    <h4>Solicitar nueva cita</h4>
+    <form (ngSubmit)="agendarCita()" class="p-fluid">
+      <div class="form-field">
+        <label for="tipo">Tipo de cita</label>
+        <p-dropdown
+          id="tipo"
+          [options]="tiposCita"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="nuevaCita.tipo"
+          name="tipo"
+          placeholder="Selecciona un tipo"
+          required
+        ></p-dropdown>
+      </div>
+      <div class="form-field">
+        <label for="fecha">Horario (fecha y hora)</label>
+        <input
+          id="fecha"
+          type="datetime-local"
+          pInputText
+          [(ngModel)]="nuevaCita.horario"
+          name="horario"
+          required
+        />
+      </div>
+      <div class="form-actions">
+        <button pButton type="submit" label="Agendar" class="p-button-success"></button>
+        <button pButton type="button" label="Cancelar" class="p-button-secondary" (click)="cerrarFormularioCita()"></button>
+      </div>
+    </form>
+  </p-card>
+
+  <!-- Upcoming Appointments -->
+  <p-card header="Citas programadas" class="appointments-card">
+    <ng-container *ngIf="citasProximas.length; else noCitas">
+      <ul class="appointments-list">
+        <li *ngFor="let cita of citasProximas" class="appointment-item">
+          <div class="appointment-time">{{ cita.horario | date:'short' }}</div>
+          <div class="appointment-type">{{ cita.tipo }}</div>
+          <div class="appointment-doctor">
+            {{ cita.nombreMedico ? 'Dr. ' + cita.nombreMedico : 'Sin médico asignado' }}
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-template #noCitas>
+      <div class="empty-state">
+        <i class="pi pi-calendar"></i>
+        <p>Sin citas programadas</p>
+      </div>
+    </ng-template>
+  </p-card>
+
+  <!-- Appointment History -->
+  <p-card header="Histórico de citas" class="history-card">
+    <ng-container *ngIf="historialCitas.length; else noHistorial">
+      <ul class="history-list">
+        <li *ngFor="let cita of historialCitas" class="history-item">
+          <div class="history-header">
+            <span class="history-date">{{ cita.horario | date:'short' }}</span>
+            <span class="history-type">{{ cita.tipo }}</span>
+            <span *ngIf="cita.nombreMedico" class="history-doctor">Dr. {{ cita.nombreMedico }}</span>
+          </div>
+          <div class="history-diagnosis">
+            <strong>Diagnóstico:</strong> {{ cita.diagnostico || 'Sin diagnóstico' }}
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-template #noHistorial>
+      <div class="empty-state">
+        <i class="pi pi-history"></i>
+        <p>Sin citas previas</p>
+      </div>
+    </ng-template>
+  </p-card>
+
+  <!-- Prescriptions -->
+  <p-card header="Recetas" class="prescriptions-card">
+    <ng-container *ngIf="recetas.length; else noRecetas">
+      <ul class="prescriptions-list">
+        <li *ngFor="let receta of recetas" class="prescription-item">
+          <div class="prescription-header">
+            <span class="prescription-id">Receta #{{ receta.id_receta }}</span>
+            <span class="prescription-date">{{ receta.fecha | date:'shortDate' }}</span>
+          </div>
+          <ng-container *ngIf="receta.detalles && receta.detalles.length; else noPrescriptionDetails">
+            <ul class="medication-list">
+              <li *ngFor="let detalle of receta.detalles" class="medication-item">
+                <span class="medication-name">{{ detalle.medicamento }}</span>
+                <span class="medication-dose">{{ detalle.dosis }}</span>
+              </li>
+            </ul>
+          </ng-container>
+          <ng-template #noPrescriptionDetails>
+            <div class="no-details">Sin detalles de medicamentos</div>
+          </ng-template>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-template #noRecetas>
+      <div class="empty-state">
+        <i class="pi pi-file"></i>
+        <p>Sin recetas</p>
+      </div>
+    </ng-template>
+  </p-card>
+</div>

@@ -1,0 +1,19 @@
+<p-card header="Configuración MFA" styleClass="w-full max-w-md mx-auto mt-4">
+  <button pButton type="button" (click)="generarTOTP()" label="Generar QR de Autenticación"></button>
+
+  <div *ngIf="qrImageSrc" class="mt-4 text-center">
+    <p>Escanea este código QR con tu app (Google Authenticator, Authy, etc):</p>
+    <img [src]="qrImageSrc" alt="QR TOTP" />
+  </div>
+
+  <div *ngIf="qrImageSrc" class="mt-3">
+    <label for="verificar">Ingresa el código que ves en tu app:</label>
+    <input id="verificar" pInputText [(ngModel)]="verifyingCode" class="w-full mt-1" />
+    <button pButton type="button" (click)="verificarCodigo()" label="Verificar Código" class="mt-2"></button>
+  </div>
+
+  <p class="mt-2 text-center" [ngClass]="{
+    'text-green-500': verificationStatus.includes('✅'),
+    'text-red-500': verificationStatus.includes('❌')
+  }">{{ verificationStatus }}</p>
+</p-card>

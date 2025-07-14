@@ -1,0 +1,23 @@
+<div>
+  <label>Consulta:</label>
+  <select [(ngModel)]="consultaId">
+    <option [ngValue]="null">Selecciona una consulta</option>
+    <option *ngFor="let c of consultas" [value]="c.id_consulta">
+      {{ c.tipo }} - {{ c.horario | date:'short' }}
+    </option>
+  </select>
+</div>
+
+<div>
+  <label>Médico:</label>
+  <select [(ngModel)]="idMedicoSeleccionado">
+    <option [ngValue]="null">Selecciona un médico</option>
+    <option *ngFor="let m of medicos" [value]="m.id_usuario">
+      {{ m.nombre }}
+    </option>
+  </select>
+</div>
+
+<button (click)="asignarMedico()">Asignar médico</button>
+
+<div *ngIf="mensaje">{{ mensaje }}</div>

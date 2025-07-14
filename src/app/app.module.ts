@@ -7,6 +7,7 @@ import { PrimeNgModule } from './primeng.module';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { FormsModule } from '@angular/forms';
+import { AvatarModule } from 'primeng/avatar';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { FormsModule } from '@angular/forms';
     BrowserModule,
     AppRoutingModule,
     PrimeNgModule,
-    FormsModule
+    FormsModule,
+     AvatarModule 
   ],
   providers: [],
   bootstrap: [AppComponent]

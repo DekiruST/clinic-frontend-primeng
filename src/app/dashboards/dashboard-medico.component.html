@@ -1,0 +1,43 @@
+<p-tabView>
+  <p-tabPanel header="🗓️ Citas">
+    <ul *ngIf="citas.length; else noCitas">
+      <li *ngFor="let c of citas" class="mb-3">
+        <b>{{ c.fecha | date:'short' }}</b> - {{ c.tipo }}<br />
+        <i>Paciente: {{ c.paciente }}</i>
+      </li>
+    </ul>
+    <ng-template #noCitas><p>No hay citas asignadas.</p></ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="💊 Recetas">
+    <ul *ngIf="recetas.length; else noRecetas">
+      <li *ngFor="let r of recetas" class="mb-4">
+        <b>Receta #{{ r.id_receta }}</b> - {{ r.fecha | date:'short' }}
+        <ul class="mt-2">
+          <li *ngFor="let d of r.detalles">
+            <span><b>{{ d.medicamento }}</b>: {{ d.dosis }}</span>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ng-template #noRecetas><p>No hay recetas asignadas.</p></ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="📁 Expedientes">
+    <ul *ngIf="expedientes.length; else noExpedientes">
+      <li *ngFor="let exp of expedientes" class="mb-4">
+<p-avatar 
+  [label]="exp.id_paciente.toString()" 
+  class="mr-2"
+  [style]="{ backgroundColor: '#607D8B', color: '#fff' }">
+</p-avatar>
+        <div>
+          <b>Paciente #{{ exp.id_paciente }}</b><br />
+          <b>Antecedentes:</b> {{ exp.antecedentes }}<br />
+          <b>Historial Clínico:</b> {{ exp.historial_clinico }}
+        </div>
+      </li>
+    </ul>
+    <ng-template #noExpedientes><p>No hay expedientes disponibles.</p></ng-template>
+  </p-tabPanel>
+</p-tabView>

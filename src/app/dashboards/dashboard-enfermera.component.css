@@ -1,0 +1,153 @@
+/* Estructura principal */
+.dashboard-wrapper {
+  padding: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Tarjetas generales */
+.p-card {
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  border: none;
+}
+
+.p-card .p-card-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.p-card .p-card-body {
+  padding: 1.5rem;
+}
+
+/* Estilos específicos para citas */
+.card-citas {
+  background-color: #f8fafc;
+}
+
+.tabla-citas {
+  margin-top: 0.5rem;
+}
+
+.tabla-citas th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: #334155;
+}
+
+.tabla-citas td {
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+}
+
+.col-fecha {
+  min-width: 150px;
+}
+
+.fecha-destacada {
+  font-weight: 500;
+  display: block;
+}
+
+.hora {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.badge-tipo {
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.badge-consulta {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-urgencia {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.medico-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Estilos específicos para expedientes */
+.card-expedientes {
+  background-color: #f8fafc;
+}
+
+.expediente-list {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.expediente-item {
+  background: white;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.expediente-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.expediente-header h3 {
+  margin: 0;
+  color: #1e293b;
+}
+
+.expediente-content {
+  padding-left: 3rem;
+}
+
+.expediente-field {
+  margin-bottom: 1rem;
+}
+
+.expediente-field label {
+  font-weight: 500;
+  color: #475569;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.expediente-field p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* Estados vacíos */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.empty-state .pi {
+  font-size: 2rem;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.empty-state p {
+  margin: 0;
+  font-style: italic;
+}

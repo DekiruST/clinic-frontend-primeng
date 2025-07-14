@@ -1,0 +1,8 @@
+
+:host ::ng-deep .p-table th {
+  background: #f4f6f9;
+}
+
+:host ::ng-deep .p-button-info {
+  border-radius: 1rem;
+}

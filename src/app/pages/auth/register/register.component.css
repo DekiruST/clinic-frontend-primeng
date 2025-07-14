@@ -1,11 +1,70 @@
-:host {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f4f4f4;
+/* Centra la card y da margen superior */
+:host ::ng-deep .p-card {
+  margin-top: 40px;
+  box-shadow: 0 2px 24px rgba(0, 80, 200, 0.10), 0 1.5px 8px rgba(0,0,0,0.02);
+  border-radius: 20px;
 }
 
-.p-card {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Formulario fluido, inputs con padding y margen */
+form.p-fluid > * {
+  margin-bottom: 1.25rem;
+}
+
+/* Etiquetas (labels) más grandes y gruesas */
+label {
+  font-weight: 600;
+  font-size: 1.07rem;
+  color: #39495c;
+}
+
+/* Inputs y dropdowns más anchos y altos */
+:host ::ng-deep .p-inputtext, 
+:host ::ng-deep .p-dropdown, 
+:host ::ng-deep .p-password-input {
+  padding: 12px 12px;
+  border-radius: 12px;
+  font-size: 1.03rem;
+}
+
+/* Botones con bordes redondeados y transiciones */
+:host ::ng-deep .p-button {
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.08rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+:host ::ng-deep .p-button:active {
+  filter: brightness(0.95);
+}
+
+:host ::ng-deep .p-button-secondary {
+  background: #617081;
+  color: #fff;
+  border: none;
+}
+
+.text-red-500 {
+  color: #e53e3e;
+  font-size: 0.98rem;
+  margin-top: -10px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Espaciado superior para campos dinámicos */
+.mt-2 { margin-top: 0.75rem; }
+.mt-3 { margin-top: 1.25rem; }
+.mt-4 { margin-top: 2rem; }
+.mt-5 { margin-top: 3rem; }
+
+/* Responsive: achica card en móvil */
+@media (max-width: 600px) {
+  :host ::ng-deep .p-card {
+    margin-top: 10px;
+    border-radius: 12px;
+  }
+  form.p-fluid > * {
+    margin-bottom: 0.7rem;
+  }
 }
