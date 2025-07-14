@@ -35,5 +35,4 @@ export class ConsultaService {
     return this.http.put(`${this.API_URL}/consultas/${idConsulta}/asignar-medico`, { id_usuario: idUsuario });
   }
 
-  // Otros métodos relacionados a consultas...
 }
