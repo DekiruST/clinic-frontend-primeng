@@ -98,7 +98,7 @@ hasPermission(permiso: string | string[]): boolean {
 
 getUserId(): number | null {
   const user = this.getUserData();
-  return user?.user_id ?? null; // Cambia 'user_id' si en tu JWT se llama diferente (por ejemplo, 'id_usuario')
+  return user?.user_id ?? null;
 }
 loginInit(email: string, password: string): Observable<any> {
   return this.http.post<any>('http://localhost:8000/auth/login/init', { email, password });
