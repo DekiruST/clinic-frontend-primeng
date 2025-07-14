@@ -9,7 +9,7 @@ export class PermissionGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot): boolean | UrlTree {
     const expectedPerm = route.data['permiso'];
-    const token = this.auth.getToken(); // <- Aquí estaba el error
+    const token = this.auth.getToken(); 
     if (!token) return this.router.parseUrl('/login');
 
     try {
