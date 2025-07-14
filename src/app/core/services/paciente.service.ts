@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Paciente, Consulta, Receta } from './modelos'; // ajusta el path si es necesario
+import { Paciente, Consulta, Receta } from './modelos'; 
 
 @Injectable({ providedIn: 'root' })
 export class PacienteService {
