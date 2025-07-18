@@ -1,4 +1,4 @@
-// src/app/core/interceptors/auth.interceptor.ts
+//auth.interceptor.ts
 import { inject } from '@angular/core';
 import {
   HttpInterceptorFn,
@@ -11,13 +11,24 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 
+const EXCLUDED_URLS = [
+  '/auth/login',
+  '/auth/login/init',
+  '/auth/register',
+];
+
 export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<any>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<any>> => {
   const authService = inject(AuthService);
-  const token = authService.getToken();
 
+  const shouldSkip = EXCLUDED_URLS.some((url) => req.url.includes(url));
+  if (shouldSkip) {
+    return next(req);
+  }
+
+  const token = authService.getToken();
   const authReq = token
     ? req.clone({
         setHeaders: {

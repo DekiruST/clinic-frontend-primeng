@@ -1,11 +1,14 @@
-<div style="margin-bottom: 1rem">
-  <button pButton label="Ir al inicio" (click)="goHome()"></button>
-  <button pButton label="Cerrar sesión" class="p-button-danger" (click)="logout()"></button>
+<!-- Controles superiores -->
+<p-toast></p-toast>
+<div class="top-buttons">
+  <button pButton label="Cerrar sesión" icon="pi pi-sign-out" class="p-button-sm p-button-danger" (click)="logout()"></button>
 </div>
 
+<!-- TabView para secciones -->
 <p-tabView>
-  <p-tabPanel header="Citas">
-    <p-table [value]="consultas">
+  <!-- Citas -->
+  <p-tabPanel header="🗓️ Citas" contentStyleClass="tab-content">
+    <p-table [value]="consultas" responsiveLayout="scroll" [paginator]="true" [rows]="5" emptyMessage="No hay consultas registradas.">
       <ng-template pTemplate="header">
         <tr>
           <th>Paciente</th>
@@ -18,68 +21,83 @@
         <tr>
           <td>{{ consulta.paciente }}</td>
           <td>{{ consulta.motivo }}</td>
-          <td>{{ consulta.fecha }}</td>
+          <td>{{ consulta.fecha | date:'short' }}</td>
           <td>
-            <button pButton label="Editar" (click)="editarConsulta(consulta)"></button>
+            <button pButton icon="pi pi-pencil" class="p-button-sm p-button-warning" (click)="editarConsulta(consulta)" pTooltip="Editar consulta" tooltipPosition="top"></button>
           </td>
         </tr>
       </ng-template>
     </p-table>
   </p-tabPanel>
 
-  <p-tabPanel header="Expedientes">
-    <ul *ngIf="expedientes.length; else sinExpedientes">
-      <li *ngFor="let exp of expedientes">
-        <b>Paciente #{{ exp.id_paciente }}</b>
-        <div><b>Antecedentes:</b> {{ exp.antecedentes }}</div>
-        <div><b>Historial Clínico:</b> {{ exp.historial_clinico }}</div>
-        <!-- <button (click)="editarExpediente(exp)">Editar</button> -->
-      </li>
-    </ul>
+  <!-- Expedientes -->
+  <p-tabPanel header="📁 Expedientes" contentStyleClass="tab-content">
+    <ng-container *ngIf="expedientes.length; else sinExpedientes">
+      <div class="cards-grid">
+        <p-card *ngFor="let exp of expedientes" class="uniform-card">
+          <div class="card-content">
+            <div class="p-d-flex p-ai-start">
+              <p-avatar 
+                [label]="exp.id_paciente.toString()" 
+                [style]="{ backgroundColor: '#607D8B', color: '#fff' }" 
+                shape="circle" 
+                class="p-mr-2">
+              </p-avatar>
+              <div>
+                <b>Paciente #{{ exp.id_paciente }}</b>
+                <div><strong>Antecedentes:</strong> {{ exp.antecedentes }}</div>
+                <div><strong>Historial Clínico:</strong> {{ exp.historial_clinico }}</div>
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </ng-container>
     <ng-template #sinExpedientes>
-      <span>No hay expedientes disponibles.</span>
+      <div class="empty-state">
+        <i class="pi pi-folder-open"></i>
+        <p>No hay expedientes disponibles.</p>
+      </div>
     </ng-template>
   </p-tabPanel>
 </p-tabView>
 
-<!-- Modal nativo de edición -->
-<!-- Modal nativo de edición -->
-<div *ngIf="consultaSeleccionada" style="
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-    background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;
-">
-  <div style="background: white; padding: 2rem; border-radius: 12px; min-width: 300px;">
-    <h3>Editar Consulta</h3>
+<!-- Modal -->
+<div *ngIf="consultaSeleccionada" class="modal-overlay fade-in">
+  <p-dialog 
+    header="Editar Consulta"
+    [(visible)]="modalVisible"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '420px' }"
+    class="p-fluid"
+    [closable]="false"
+  >
     <form (ngSubmit)="guardarEdicionConsulta()" #f="ngForm">
-      
-      <!-- Diagnóstico (motivo) -->
-      <label>Motivo:</label>
-      <input [(ngModel)]="consultaSeleccionada.diagnostico" name="diagnostico" required>
-      <br>
+      <div class="p-field">
+        <label for="diagnostico">Motivo</label>
+        <input id="diagnostico" pInputText [(ngModel)]="consultaSeleccionada.diagnostico" name="diagnostico" required />
+      </div>
+      <div class="p-field">
+        <label for="horario">Fecha</label>
+        <input id="horario" type="datetime-local" pInputText [(ngModel)]="consultaSeleccionada.horario" name="horario" required />
+      </div>
+      <div class="p-field">
+        <label for="tipo">Tipo</label>
+        <input id="tipo" pInputText [(ngModel)]="consultaSeleccionada.tipo" name="tipo" required />
+      </div>
+      <div class="p-field">
+        <label for="costo">Costo</label>
+        <input id="costo" type="number" pInputText [(ngModel)]="consultaSeleccionada.costo" name="costo" required />
+      </div>
 
-      <!-- Fecha y hora -->
-      <label>Fecha:</label>
-      <input type="datetime-local" [(ngModel)]="consultaSeleccionada.horario" name="horario" required>
-      <br>
+      <input type="hidden" [(ngModel)]="consultaSeleccionada.id_consultorio" name="id_consultorio" />
+      <input type="hidden" [(ngModel)]="consultaSeleccionada.id_paciente" name="id_paciente" />
 
-      <!-- Tipo -->
-      <label>Tipo:</label>
-      <input [(ngModel)]="consultaSeleccionada.tipo" name="tipo" required>
-      <br>
-
-      <!-- Costo -->
-      <label>Costo:</label>
-      <input type="number" [(ngModel)]="consultaSeleccionada.costo" name="costo" required>
-      <br>
-
-      <!-- id_consultorio e id_paciente como campos ocultos o readonly -->
-      <input type="hidden" [(ngModel)]="consultaSeleccionada.id_consultorio" name="id_consultorio">
-      <input type="hidden" [(ngModel)]="consultaSeleccionada.id_paciente" name="id_paciente">
-
-      <!-- Botones -->
-      <br>
-      <button type="submit" pButton label="Guardar"></button>
-      <button type="button" pButton label="Cancelar" class="p-button-secondary" (click)="cancelarEdicion()"></button>
+      <div class="p-d-flex p-jc-end p-mt-3">
+        <button type="submit" pButton label="Guardar" icon="pi pi-check" class="p-button-sm p-button-success p-mr-2"></button>
+        <button type="button" pButton label="Cancelar" icon="pi pi-times" class="p-button-sm p-button-secondary" (click)="cancelarEdicion()"></button>
+      </div>
     </form>
-  </div>
+  </p-dialog>
 </div>

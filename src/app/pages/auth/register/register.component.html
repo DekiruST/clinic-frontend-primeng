@@ -1,80 +1,82 @@
 <!-- src/app/pages/auth/register/register.component.html -->
 
-<p-card header="Registro de Usuario" styleClass="w-full max-w-md mx-auto mt-5">
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-fluid">
+<p-toast></p-toast>
 
-    <!-- Email -->
-    <label for="email">Correo electrónico</label>
-    <input id="email" type="email" pInputText formControlName="email" />
-    <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-red-500">
-      Correo inválido
-    </div>
+<div class="flex justify-content-center align-items-center min-h-screen bg-gray-100">
+  <p-card header="Registro de Usuario" styleClass="login-card w-full max-w-md p-4 shadow-4 border-round-lg">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-fluid">
 
-    <!-- Rol -->
-    <label for="rol" class="mt-3">Rol</label>
-<p-dropdown
-  inputId="rol"
-  [options]="roles"
-  optionLabel="label"
-  optionValue="value"
-  formControlName="rol"
-  placeholder="Seleccione un rol"
-  (onChange)="onRolChange($event.value)">
-</p-dropdown>
-
-    <div *ngIf="registerForm.get('rol')?.invalid && registerForm.get('rol')?.touched" class="text-red-500">
-      Seleccione un rol
-    </div>
-
-    
-    <!-- Especialidad (solo si rol es médico) -->
-    <div *ngIf="selectedRol === 'médico'" class="mt-3">
-      <label for="especialidad">Especialidad</label>
-      <input id="especialidad" type="text" pInputText formControlName="especialidad" />
-      <div *ngIf="registerForm.get('especialidad')?.invalid && registerForm.get('especialidad')?.touched" class="text-red-500">
-        Especialidad requerida
+      <!-- Email -->
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" pInputText formControlName="email" />
+      <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-red-500 text-sm">
+        Correo inválido
       </div>
-    </div>
 
-<!-- Campo nombre SIEMPRE visible -->
-<label for="nombre" class="mt-3">Nombre completo</label>
-<input id="nombre" type="text" pInputText formControlName="nombre" />
-<div *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" class="text-red-500">
-  El nombre es requerido.
+      <!-- Rol -->
+      <label for="rol" class="mt-3">Rol</label>
+      <p-dropdown
+        inputId="rol"
+        [options]="roles"
+        optionLabel="label"
+        optionValue="value"
+        formControlName="rol"
+        placeholder="Seleccione un rol"
+        (onChange)="onRolChange($event.value)">
+      </p-dropdown>
+      <div *ngIf="registerForm.get('rol')?.invalid && registerForm.get('rol')?.touched" class="text-red-500 text-sm">
+        Seleccione un rol
+      </div>
+
+      <!-- Especialidad (si médico) -->
+      <div *ngIf="selectedRol === 'médico'" class="mt-3">
+        <label for="especialidad">Especialidad</label>
+        <input id="especialidad" type="text" pInputText formControlName="especialidad" />
+        <div *ngIf="registerForm.get('especialidad')?.invalid && registerForm.get('especialidad')?.touched" class="text-red-500 text-sm">
+          Especialidad requerida
+        </div>
+      </div>
+
+      <!-- Nombre -->
+      <label for="nombre" class="mt-3">Nombre completo</label>
+      <input id="nombre" type="text" pInputText formControlName="nombre" />
+      <div *ngIf="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched" class="text-red-500 text-sm">
+        El nombre es requerido
+      </div>
+
+      <!-- Contacto y Seguro (si paciente) -->
+      <div *ngIf="selectedRol === 'paciente'" class="mt-3">
+        <label for="contacto">Contacto</label>
+        <input id="contacto" type="text" pInputText formControlName="contacto" />
+        <div *ngIf="registerForm.get('contacto')?.invalid && registerForm.get('contacto')?.touched" class="text-red-500 text-sm">
+          Contacto es requerido
+        </div>
+
+        <label for="seguro" class="mt-3">Seguro (opcional)</label>
+        <input id="seguro" type="text" pInputText formControlName="seguro" />
+      </div>
+
+      <!-- Contraseña -->
+      <label for="password" class="mt-3">Contraseña</label>
+      <p-password
+        id="password"
+        formControlName="password"
+        [feedback]="true"
+        [toggleMask]="true"
+        [promptLabel]="'Requiere al menos 12 caracteres, números y símbolos.'"
+        [weakLabel]="'Débil'"
+        [mediumLabel]="'Media'"
+        [strongLabel]="'Fuerte'">
+      </p-password>
+      <div *ngIf="registerForm.get('password')?.errors?.['weakPassword'] && registerForm.get('password')?.touched" class="text-red-500 text-sm">
+        Contraseña débil: mínimo 12 caracteres, números y símbolos
+      </div>
+
+      <!-- Botones -->
+      <div class="mt-4 flex flex-column gap-2">
+        <button type="submit" pButton label="Registrarse" [disabled]="registerForm.invalid"></button>
+        <button type="button" pButton label="¿Ya tienes cuenta? Inicia sesión" severity="secondary" (click)="goToLogin()"></button>
+      </div>
+    </form>
+  </p-card>
 </div>
-
-<!-- Campos adicionales solo si es paciente -->
-<div *ngIf="selectedRol === 'paciente'" class="mt-3">
-  <label for="contacto">Contacto</label>
-  <input id="contacto" type="text" pInputText formControlName="contacto" />
-  <div *ngIf="registerForm.get('contacto')?.invalid && registerForm.get('contacto')?.touched" class="text-red-500">
-    Contacto es requerido.
-  </div>
-
-
-  <label for="seguro" class="mt-3">Seguro (opcional)</label>
-  <input id="seguro" type="text" pInputText formControlName="seguro" />
-</div>
-
-
-    <!-- Contraseña -->
-    <label for="password" class="mt-3">Contraseña</label>
-    <p-password
-      id="password"
-      formControlName="password"
-      [feedback]="true"
-      [toggleMask]="true"
-      [promptLabel]="'Requiere al menos 12 caracteres, números y símbolos.'"
-      [weakLabel]="'Débil'"
-      [mediumLabel]="'Media'"
-      [strongLabel]="'Fuerte'">
-    </p-password>
-    <div *ngIf="registerForm.get('password')?.errors?.['weakPassword'] && registerForm.get('password')?.touched" class="text-red-500">
-      La contraseña es débil. Debe tener al menos 12 caracteres, números y símbolos.
-    </div>
-
-    <!-- Botones -->
-    <button type="submit" pButton label="Registrarse" class="mt-4" [disabled]="registerForm.invalid"></button>
-    <button type="button" pButton label="¿Ya tienes cuenta? Inicia sesión" class="mt-2" (click)="goToLogin()" severity="secondary"></button>
-  </form>
-</p-card>

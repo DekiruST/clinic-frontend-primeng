@@ -1,83 +1,140 @@
-<div class="dashboard-wrapper">
-  <!-- Citas -->
-  <p-card header="📅 Todas las Citas" class="card-citas">
-    @if (citas.length > 0) {
-      <p-table [value]="citas" 
-               [responsiveLayout]="'scroll'" 
-               class="p-datatable-sm tabla-citas"
-               styleClass="p-datatable-gridlines">
+<div class="dashboard-wrapper p-grid p-justify-center p-p-4 p-gap-4">
+  
+  <!-- 📅 Citas -->
+  <p-card class="p-col-12 p-md-6 card-citas modern-card">
+    <ng-template pTemplate="header">
+      <div class="card-header-custom">
+        <div class="header-icon">
+          <i class="pi pi-calendar"></i>
+        </div>
+        <div class="header-content">
+          <h2>Todas las Citas</h2>
+          <p class="header-subtitle">Gestión de citas médicas</p>
+        </div>
+      </div>
+    </ng-template>
+    
+    <ng-container *ngIf="citas.length > 0; else noCitas">
+      <p-table [value]="citas"
+               [responsiveLayout]="'scroll'"
+               class="modern-table">
         <ng-template pTemplate="header">
           <tr>
-            <th class="col-fecha">Fecha</th>
-            <th class="col-tipo">Tipo</th>
-            <th class="col-medico">Médico</th>
+            <th class="table-header">
+              <i class="pi pi-calendar-plus mr-2"></i>
+              Fecha y Hora
+            </th>
+            <th class="table-header">
+              <i class="pi pi-heart mr-2"></i>
+              Tipo
+            </th>
+            <th class="table-header">
+              <i class="pi pi-user-md mr-2"></i>
+              Médico
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-cita>
-          <tr>
-            <td class="col-fecha">
-              <span class="fecha-destacada">{{ cita.horario | date: 'mediumDate' }}</span>
-              <span class="hora">{{ cita.horario | date: 'shortTime' }}</span>
+          <tr class="table-row">
+            <td>
+              <div class="date-container">
+                <div class="date-primary">{{ cita.horario | date: 'mediumDate' }}</div>
+                <div class="date-secondary">{{ cita.horario | date: 'shortTime' }}</div>
+              </div>
             </td>
-            <td class="col-tipo">
-              <span class="badge-tipo" [ngClass]="{
-                'badge-consulta': cita.tipo === 'Consulta',
-                'badge-urgencia': cita.tipo === 'Urgencia'
-              }">
+            <td>
+              <span class="status-badge"
+                    [ngClass]="{
+                      'badge-consulta': cita.tipo === 'Consulta',
+                      'badge-urgencia': cita.tipo === 'Urgencia'
+                    }">
+                <i class="pi" [ngClass]="{
+                  'pi-heart': cita.tipo === 'Consulta',
+                  'pi-exclamation-triangle': cita.tipo === 'Urgencia'
+                }"></i>
                 {{ cita.tipo }}
               </span>
             </td>
-            <td class="col-medico">
+            <td>
               <div class="medico-info">
-                <i class="pi pi-user-md"></i>
-                {{ cita.nombreMedico ? 'Dr. ' + cita.nombreMedico : 'Sin asignar' }}
+                <i class="pi pi-user-md medico-icon"></i>
+                <span class="medico-name">{{ cita.nombreMedico ? 'Dr. ' + cita.nombreMedico : 'Sin asignar' }}</span>
               </div>
             </td>
           </tr>
         </ng-template>
       </p-table>
-    } @else {
+    </ng-container>
+    <ng-template #noCitas>
       <div class="empty-state">
-        <i class="pi pi-calendar"></i>
-        <p>No hay citas registradas.</p>
+        <div class="empty-icon">
+          <i class="pi pi-calendar-times"></i>
+        </div>
+        <h3>No hay citas registradas</h3>
+        <p>Las citas aparecerán aquí cuando se programen</p>
       </div>
-    }
+    </ng-template>
   </p-card>
 
-  <!-- Expedientes -->
-  <p-card header="📁 Expedientes" class="card-expedientes">
-    @if (expedientes.length > 0) {
-      <div class="expediente-list">
-        @for (exp of expedientes; track exp.id_paciente) {
-          <div class="expediente-item">
+  <!-- 📁 Expedientes -->
+  <p-card class="p-col-12 p-md-6 card-expedientes modern-card">
+    <ng-template pTemplate="header">
+      <div class="card-header-custom">
+        <div class="header-icon expedientes-icon">
+          <i class="pi pi-folder"></i>
+        </div>
+        <div class="header-content">
+          <h2>Expedientes</h2>
+          <p class="header-subtitle">Historial médico de pacientes</p>
+        </div>
+      </div>
+    </ng-template>
+    
+    <ng-container *ngIf="expedientes.length > 0; else noExpedientes">
+      <div class="expedientes-grid">
+        <ng-container *ngFor="let exp of expedientes; trackBy: trackById">
+          <div class="expediente-card">
             <div class="expediente-header">
-              <p-avatar [label]="exp.id_paciente.toString()" 
-                       [style]="{ backgroundColor: '#607D8B', color: '#fff' }"
-                       size="large"
-                       shape="circle">
+              <p-avatar [label]="exp.id_paciente.toString()"
+                        styleClass="patient-avatar"
+                        size="large"
+                        shape="circle">
               </p-avatar>
-              <h3>Paciente #{{ exp.id_paciente }}</h3>
+              <div class="patient-info">
+                <h3>Paciente #{{ exp.id_paciente }}</h3>
+                <span class="patient-id">ID: {{ exp.id_paciente }}</span>
+              </div>
             </div>
             
             <div class="expediente-content">
-              <div class="expediente-field">
-                <label>Antecedentes:</label>
-                <p>{{ exp.antecedentes || 'N/A' }}</p>
+              <div class="info-section">
+                <div class="info-label">
+                  <i class="pi pi-history mr-1"></i>
+                  Antecedentes
+                </div>
+                <div class="info-value">{{ exp.antecedentes || 'Sin antecedentes registrados' }}</div>
               </div>
               
-              <div class="expediente-field">
-                <label>Historial Clínico:</label>
-                <p>{{ exp.historial_clinico || 'N/A' }}</p>
+              <div class="info-section">
+                <div class="info-label">
+                  <i class="pi pi-file-medical mr-1"></i>
+                  Historial Clínico
+                </div>
+                <div class="info-value">{{ exp.historial_clinico || 'Sin historial disponible' }}</div>
               </div>
             </div>
           </div>
-        }
+        </ng-container>
       </div>
-    } @else {
+    </ng-container>
+    <ng-template #noExpedientes>
       <div class="empty-state">
-        <i class="pi pi-folder-open"></i>
-        <p>No hay expedientes disponibles.</p>
+        <div class="empty-icon expedientes-empty">
+          <i class="pi pi-folder-open"></i>
+        </div>
+        <h3>No hay expedientes disponibles</h3>
+        <p>Los expedientes de pacientes aparecerán aquí</p>
       </div>
-    }
+    </ng-template>
   </p-card>
 </div>

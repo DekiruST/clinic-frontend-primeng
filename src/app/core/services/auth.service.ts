@@ -98,10 +98,14 @@ hasPermission(permiso: string | string[]): boolean {
 
 getUserId(): number | null {
   const user = this.getUserData();
-  return user?.user_id ?? null;
+  return user?.user_id ?? null; 
 }
 loginInit(email: string, password: string): Observable<any> {
   return this.http.post<any>('http://localhost:8000/auth/login/init', { email, password });
+}
+
+verifyTOTP(code: string) {
+  return this.http.post(`${this.apiUrl}/auth/totp/verify`, { code });
 }
 
 }

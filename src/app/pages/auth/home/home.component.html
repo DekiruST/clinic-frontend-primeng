@@ -1,7 +1,11 @@
-<h1>Bienvenido al sistema clínico</h1>
-<p>Por favor inicia sesión o regístrate para continuar.</p>
+<div class="home-container">
+  <p-card>
+    <h2 class="title">Bienvenido al Sistema Clínico</h2>
+    <p class="subtitle">Por favor, inicia sesión o regístrate para continuar.</p>
 
-<div style="margin-top: 20px;">
-  <button pButton label="Iniciar sesión" routerLink="/login" class="p-button-success"></button>
-  <button pButton label="Registrarse" routerLink="/register" class="p-button-secondary" style="margin-left: 1rem;"></button>
+    <div class="button-group">
+      <button pButton label="Iniciar sesión" routerLink="/login" class="p-button-success p-button-lg"></button>
+      <button pButton label="Registrarse" routerLink="/register" class="p-button-secondary p-button-lg"></button>
+    </div>
+  </p-card>
 </div>

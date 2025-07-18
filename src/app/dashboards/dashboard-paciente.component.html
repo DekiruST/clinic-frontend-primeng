@@ -1,6 +1,9 @@
+<!-- dashboard-paciente.component.html mejorado -->
 <div class="dashboard-wrapper">
+  <!-- Loading Indicator -->
   <p-progressSpinner *ngIf="cargando" class="loader-center"></p-progressSpinner>
 
+  <!-- Patient Welcome Card -->
   <p-card header="Bienvenido Paciente" class="welcome-card">
     <div class="patient-info">
       <p><strong>Nombre:</strong> {{ paciente?.nombre }}</p>
@@ -19,12 +22,18 @@
     ></button>
   </p-card>
 
+  <!-- Appointment Message -->
   <div *ngIf="mensajeCita" class="message-container" [ngClass]="{
     'success-message': mensajeCita.includes('✅'),
     'error-message': mensajeCita.includes('❌')
   }">
     {{ mensajeCita }}
   </div>
+</p-card>
+
+
+  <!-- Toast de mensajes -->
+  <p-toast></p-toast>
 
   <p-card *ngIf="mostrarFormularioCita" class="appointment-form">
     <h4>Solicitar nueva cita</h4>
@@ -42,6 +51,7 @@
           required
         ></p-dropdown>
       </div>
+
       <div class="form-field">
         <label for="fecha">Horario (fecha y hora)</label>
         <input
@@ -51,15 +61,32 @@
           [(ngModel)]="nuevaCita.horario"
           name="horario"
           required
+          [min]="minFecha"
         />
       </div>
+
       <div class="form-actions">
-        <button pButton type="submit" label="Agendar" class="p-button-success"></button>
-        <button pButton type="button" label="Cancelar" class="p-button-secondary" (click)="cerrarFormularioCita()"></button>
+        <button
+          pButton
+          type="submit"
+          label="Agendar"
+          icon="pi pi-check"
+          class="p-button-success form-action-btn"
+        ></button>
+
+        <button
+          pButton
+          type="button"
+          label="Cancelar"
+          icon="pi pi-times"
+          class="p-button-secondary form-action-btn"
+          (click)="cerrarFormularioCita()"
+        ></button>
       </div>
     </form>
   </p-card>
 
+  <!-- Upcoming Appointments -->
   <p-card header="Citas programadas" class="appointments-card">
     <ng-container *ngIf="citasProximas.length; else noCitas">
       <ul class="appointments-list">
@@ -80,6 +107,7 @@
     </ng-template>
   </p-card>
 
+  <!-- Appointment History -->
   <p-card header="Histórico de citas" class="history-card">
     <ng-container *ngIf="historialCitas.length; else noHistorial">
       <ul class="history-list">
@@ -103,6 +131,7 @@
     </ng-template>
   </p-card>
 
+  <!-- Prescriptions -->
   <p-card header="Recetas" class="prescriptions-card">
     <ng-container *ngIf="recetas.length; else noRecetas">
       <ul class="prescriptions-list">

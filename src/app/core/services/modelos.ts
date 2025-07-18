@@ -16,7 +16,7 @@ export interface Consulta {
   id_consultorio: number;
   id_paciente: number;
   id_medico?: number | null;
-  nombreMedico?: string; // ✅ agrega este campo opcional
+  nombreMedico?: string;
 }
 
 

@@ -25,6 +25,7 @@ export class DashboardMedicoComponent implements OnInit {
   citas: ConsultaMedico[] = [];
   recetas: Receta[] = [];
   expedientes: Expediente[] = [];
+  router: any;
 
   constructor(private medicoService: MedicoService) {}
 
@@ -42,4 +43,9 @@ export class DashboardMedicoComponent implements OnInit {
       error: () => this.expedientes = []
     });
   }
+  logout() {
+  localStorage.clear();
+  this.router.navigate(['/login']);
+}
+
 }

@@ -12,10 +12,20 @@ export class PermissionGuard implements CanActivate {
     const token = this.auth.getToken(); 
     if (!token) return this.router.parseUrl('/login');
 
-    try {
-      const decoded: any = jwtDecode(token);
+  try {
+    const decoded: any = jwtDecode(token);
+
+
+    if (expectedRol) {
+      const userRol = decoded.rol?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      if (userRol === expectedRol.toLowerCase()) {
+        return true;
+      }
+    }
+
+
+    if (expectedPerm) {
       if (Array.isArray(expectedPerm)) {
-        // Todos los permisos requeridos
         if (expectedPerm.every((p: string) => decoded.permisos?.includes(p))) {
           return true;
         }
@@ -24,9 +34,10 @@ export class PermissionGuard implements CanActivate {
           return true;
         }
       }
-    } catch (e) {}
+    }
 
-    // Acceso denegado
-    return this.router.parseUrl('/acceso-denegado');
-  }
+  } catch (e) {}
+
+  return this.router.parseUrl('/acceso-denegado');
+}
 }

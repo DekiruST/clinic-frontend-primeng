@@ -1,17 +1,40 @@
-<h2>Solicitar Cita</h2>
-<form [formGroup]="citaForm" (ngSubmit)="solicitarCita()">
-  <label>Especialidad:</label>
-  <input formControlName="especialidad" type="text" required>
+<h2 class="titulo-formulario">🗓️ Solicitar Cita</h2>
 
-  <label>Descripción:</label>
-  <textarea formControlName="descripcion" required></textarea>
+<form [formGroup]="citaForm" (ngSubmit)="solicitarCita()" class="formulario-cita">
+  <div class="campo-formulario">
+    <label for="especialidad">Especialidad:</label>
+    <input pInputText formControlName="especialidad" id="especialidad" type="text" required />
+  </div>
 
- <label>Horario (fecha y hora):</label>
-<input type="datetime-local" [(ngModel)]="nuevaCita.horario" name="horario" required />
+  <div class="campo-formulario">
+    <label for="descripcion">Descripción:</label>
+    <textarea pInputTextarea formControlName="descripcion" id="descripcion" rows="4" required></textarea>
+  </div>
 
-  <button type="submit" [disabled]="citaForm.invalid">Enviar solicitud</button>
+  <div class="campo-formulario">
+    <label for="horario">Horario (fecha y hora):</label>
+    <input
+      pInputText
+      type="datetime-local"
+      id="horario"
+      [(ngModel)]="nuevaCita.horario"
+      name="horario"
+      required
+    />
+  </div>
+
+  <div class="acciones-formulario">
+    <button
+      pButton
+      type="submit"
+      label="Enviar solicitud"
+      icon="pi pi-check"
+      [disabled]="citaForm.invalid"
+      class="p-button-success"
+    ></button>
+  </div>
 </form>
 
-<div *ngIf="mensaje">
+<p *ngIf="mensaje" class="mensaje-sistema">
   {{ mensaje }}
-</div>
+</p>

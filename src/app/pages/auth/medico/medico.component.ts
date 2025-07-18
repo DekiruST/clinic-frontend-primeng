@@ -1,3 +1,4 @@
+// clinic-frontend-primeng/src/app/pages/auth/medico/medico.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -8,23 +9,38 @@ import { NgIf, AsyncPipe, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
+import { CardModule } from 'primeng/card';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-medico',
   standalone: true,
-  imports: [CommonModule, TableModule, TabViewModule, ButtonModule, NgIf, NgFor, FormsModule],
+  imports: [CommonModule, TableModule, TabViewModule, ButtonModule, NgIf, NgFor, FormsModule, CardModule,        // ✅ para <p-card>
+    AvatarModule,      
+    TabViewModule,     
+    ButtonModule,      
+    TooltipModule,
+    ToastModule,
+  DialogModule  ],
+  providers: [MessageService],
   templateUrl: './medico.component.html',
-  styleUrls: []
+  styleUrls: ['./medico.component.css']
 })
 export class MedicoComponent implements OnInit {
   consultas: any[] = [];
   expedientes: any[] = [];
   consultaSeleccionada: any = null;
+  modalVisible: boolean = false;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -49,13 +65,15 @@ export class MedicoComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  editarConsulta(consulta: any) {
-    this.consultaSeleccionada = { ...consulta }; // clona para editar
-  }
+editarConsulta(consulta: any) {
+  this.consultaSeleccionada = { ...consulta };
+  this.modalVisible = true;
+}
 
-  cancelarEdicion() {
-    this.consultaSeleccionada = null;
-  }
+cancelarEdicion() {
+  this.modalVisible = false;
+  this.consultaSeleccionada = null;
+}
 
 guardarEdicionConsulta() {
   const c = this.consultaSeleccionada;
@@ -69,40 +87,49 @@ guardarEdicionConsulta() {
     console.log("costo:", c?.costo);
     console.log("id_paciente:", c?.id_paciente);
     console.log("id_consultorio:", c?.id_consultorio);
-    alert("Faltan datos obligatorios o hay datos inválidos.");
-    return;
+
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Faltan datos',
+      detail: 'Por favor completa todos los campos obligatorios',
+      life: 4000
+    });
+
+    return; 
   }
 
-  // Construcción del objeto limpio a enviar
-const datosActualizados = {
-  tipo: c.tipo,
-  horario: new Date(c.horario).toISOString(),
-  diagnostico: c.diagnostico?.trim() || null,
-  costo: Number(c.costo),
-  id_consultorio: Number(c.id_consultorio),
-  id_paciente: Number(c.id_paciente),
-  id_medico: this.authService.getUserId()
-};
+  const datosActualizados = {
+    tipo: c.tipo,
+    horario: new Date(c.horario).toISOString(),
+    diagnostico: c.diagnostico?.trim() || null,
+    costo: Number(c.costo),
+    id_consultorio: Number(c.id_consultorio),
+    id_paciente: Number(c.id_paciente),
+    id_medico: this.authService.getUserId()
+  };
 
-
-  // Log de depuración final
-  console.log("✅ Enviando al backend:", datosActualizados);
-
-  // Envío de la solicitud PUT
   this.http.put(`http://localhost:8000/consultas/${c.id_consulta}`, datosActualizados)
     .subscribe({
       next: res => {
-        alert("Consulta actualizada.");
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Consulta actualizada correctamente',
+          life: 3000
+        });
         this.consultaSeleccionada = null;
+        this.modalVisible = false; 
         this.recargarConsultas();
       },
       error: err => {
-        alert("Ocurrió un error al actualizar.");
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Ocurrió un error al actualizar',
+          life: 4000
+        });
         console.error("❌ ERROR al actualizar:", err);
       }
     });
 }
-
-
-
 }

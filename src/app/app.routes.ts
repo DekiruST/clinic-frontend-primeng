@@ -34,7 +34,7 @@ export const routes: Routes = [
   path: 'dashboard-paciente',
   component: DashboardPacienteComponent,
   canActivate: [authGuard, PermissionGuard],
-  data: { permiso: ['consultas:read', 'recetas:read'] } 
+  data: { rol: 'paciente' }
 }
 
     ]
@@ -42,7 +42,7 @@ export const routes: Routes = [
 
 {
   path: 'enfermera',
-  component: EnfermeraComponent, // Layout o página padre
+  component: EnfermeraComponent,  
   canActivate: [authGuard],
   children: [
     {
@@ -60,7 +60,7 @@ export const routes: Routes = [
 },
 {
   path: 'medico',
-  component: MedicoComponent, // Puede ser un layout vacío
+  component: MedicoComponent, 
   canActivate: [authGuard],
   children: [
     {

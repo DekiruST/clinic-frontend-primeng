@@ -6,18 +6,26 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TooltipModule } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 import { Paciente, Consulta, Receta } from '../core/services/modelos';
 import { PacienteService } from '../core/services/paciente.service';
+import { Router } from '@angular/router'; 
+
 
 @Component({
   selector: 'app-dashboard-paciente',
   standalone: true,
   templateUrl: './dashboard-paciente.component.html',
   styleUrls: ['./dashboard-paciente.component.css'],
+  providers: [MessageService],
   imports: [
     CommonModule,
     FormsModule,
+    TooltipModule,
+    ToastModule,
     CardModule,
     ButtonModule,
     DropdownModule,
@@ -33,8 +41,8 @@ export class DashboardPacienteComponent implements OnInit {
   recetas: Receta[] = [];
 
   cargando = true;
-  mensajeCita: string | null = null;
   mostrarFormularioCita = false;
+  minFecha: string = new Date().toISOString().slice(0, 16); // 🆕
 
   tiposCita = [
     { label: 'General', value: 'general' },
@@ -48,7 +56,11 @@ export class DashboardPacienteComponent implements OnInit {
     horario: ''
   };
 
-  constructor(private pacienteService: PacienteService) {}
+  constructor(
+    private pacienteService: PacienteService,
+    private messageService: MessageService,
+  private router: Router
+  ) {}
 
   ngOnInit() {
     this.cargarDatosPaciente();
@@ -112,6 +124,7 @@ export class DashboardPacienteComponent implements OnInit {
   abrirFormularioCita() {
     this.mostrarFormularioCita = true;
     this.nuevaCita = { tipo: '', horario: '' };
+    this.minFecha = new Date().toISOString().slice(0, 16); 
   }
 
   cerrarFormularioCita() {
@@ -120,8 +133,11 @@ export class DashboardPacienteComponent implements OnInit {
 
   agendarCita() {
     if (!this.paciente || !this.nuevaCita.tipo || !this.nuevaCita.horario) {
-      this.mensajeCita = "Debes completar todos los campos.";
-      setTimeout(() => this.mensajeCita = null, 3000);
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Campos incompletos',
+        detail: 'Debes completar todos los campos para agendar una cita.'
+      });
       return;
     }
 
@@ -134,14 +150,20 @@ export class DashboardPacienteComponent implements OnInit {
 
     this.pacienteService.agendarCita(cita).subscribe({
       next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: '✅ Cita agendada',
+          detail: 'Tu cita fue registrada correctamente.'
+        });
         this.cargarDatosPaciente();
         this.cerrarFormularioCita();
       },
       error: () => {
-        this.mensajeCita = "❌ Error al agendar la cita.";
-        setTimeout(() => this.mensajeCita = null, 3000);
+        this.messageService.add({
+          severity: 'error',
+          summary: '❌ Error',
+          detail: 'No se pudo agendar la cita. Intenta más tarde.'
+        });
       }
     });
-  }
-  
-}
+  }}

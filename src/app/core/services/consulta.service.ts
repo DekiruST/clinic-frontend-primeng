@@ -20,7 +20,7 @@ export class ConsultaService {
 
   constructor(private http: HttpClient) {}
 
-  // Obtener todas las consultas (puedes filtrar por no asignadas si lo deseas)
+  // Obtener todas las consultas 
   getConsultas(): Observable<Consulta[]> {
     return this.http.get<Consulta[]>(`${this.API_URL}/consultas`);
   }

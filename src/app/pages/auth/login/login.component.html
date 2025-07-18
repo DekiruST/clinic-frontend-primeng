@@ -1,6 +1,7 @@
-<p-card header="Iniciar Sesión" styleClass="w-full max-w-md mx-auto mt-5">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="p-fluid">
+<p-toast></p-toast>
 
+<p-card header="Iniciar sesión" styleClass="login-card">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="p-fluid">
     <!-- Email -->
     <label for="email">Correo electrónico</label>
     <input id="email" type="email" pInputText formControlName="email" />
@@ -17,29 +18,12 @@
       [toggleMask]="true">
     </p-password>
 
-<!-- MFA TOTP -->
-<div class="mt-3">
-<label for="totp_code" class="mt-3">Código de autenticación</label>
-<input
-  id="totp_code"
-  type="text"
-  pInputText
-  formControlName="totp_code"
-  maxlength="6"
-  placeholder="000000"
-  autocomplete="one-time-code"
-/>
-<div *ngIf="loginForm.get('totp_code')?.invalid && loginForm.get('totp_code')?.touched" class="text-red-500">
-  Ingresa el código de tu app de autenticación
-</div>
-
-</div>
-
-
+    <!-- MFA TOTP -->
+    <label for="totp_code" class="mt-3">Código MFA</label>
+    <input id="totp_code" type="text" pInputText formControlName="totp_code" maxlength="6" placeholder="000000" />
 
     <!-- Botones -->
     <button type="submit" pButton label="Iniciar sesión" class="mt-4"></button>
-    <button type="button" pButton label="Registrarme" class="mt-2" severity="secondary" (click)="goToRegister()"></button>
-
+    <button type="button" pButton label="Registrarme" severity="secondary" class="mt-2" (click)="goToRegister()"></button>
   </form>
 </p-card>

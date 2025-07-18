@@ -1,19 +1,54 @@
-<p-card header="Configuración MFA" styleClass="w-full max-w-md mx-auto mt-4">
-  <button pButton type="button" (click)="generarTOTP()" label="Generar QR de Autenticación"></button>
+<p-card header="🔐 Configuración MFA (Autenticación en dos pasos)" styleClass="w-full max-w-lg mx-auto mt-5 shadow-3">
+  <div class="p-fluid flex flex-column gap-3">
 
-  <div *ngIf="qrImageSrc" class="mt-4 text-center">
-    <p>Escanea este código QR con tu app (Google Authenticator, Authy, etc):</p>
-    <img [src]="qrImageSrc" alt="QR TOTP" />
+    <!-- Botón para generar el QR -->
+    <button
+      pButton
+      type="button"
+      label="📷 Generar Código QR"
+      class="p-button-primary w-full"
+      icon="pi pi-qrcode"
+      (click)="generarTOTP()"
+    ></button>
+
+
+    <!-- Sección de QR generado -->
+    <div *ngIf="qrImageSrc" class="mt-3 text-center">
+      <p class="text-lg font-semibold">Escanea este código QR con tu app (Google Authenticator, Authy, etc):</p>
+      <img [src]="qrImageSrc" alt="QR TOTP" class="border-round border-1 border-300 shadow-2 my-3" style="width: 200px; height: 200px;" />
+    </div>
+
+    <!-- Verificación del código -->
+    <div *ngIf="qrImageSrc" class="p-fluid">
+      <label for="verificar" class="font-medium">🔢 Código MFA</label>
+      <input
+        id="verificar"
+        type="text"
+        maxlength="6"
+        pInputText
+        [(ngModel)]="verifyingCode"
+        placeholder="Ingresa el código de 6 dígitos"
+        class="mt-1"
+      />
+      <button
+        pButton
+        type="button"
+        label="Verificar Código"
+        icon="pi pi-check"
+        class="p-button-success mt-2"
+        (click)="verificarCodigo()"
+      ></button>
+    </div>
+
+    <!-- Estado de la verificación -->
+    <p
+      class="mt-2 text-center text-lg font-medium"
+      [ngClass]="{
+        'text-green-600': verificationStatus.includes('✅'),
+        'text-red-600': verificationStatus.includes('❌')
+      }"
+    >
+      {{ verificationStatus }}
+    </p>
   </div>
-
-  <div *ngIf="qrImageSrc" class="mt-3">
-    <label for="verificar">Ingresa el código que ves en tu app:</label>
-    <input id="verificar" pInputText [(ngModel)]="verifyingCode" class="w-full mt-1" />
-    <button pButton type="button" (click)="verificarCodigo()" label="Verificar Código" class="mt-2"></button>
-  </div>
-
-  <p class="mt-2 text-center" [ngClass]="{
-    'text-green-500': verificationStatus.includes('✅'),
-    'text-red-500': verificationStatus.includes('❌')
-  }">{{ verificationStatus }}</p>
 </p-card>

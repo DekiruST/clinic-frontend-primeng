@@ -18,6 +18,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+
 
 function passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value || '';
@@ -37,8 +40,10 @@ function passwordStrengthValidator(control: AbstractControl): ValidationErrors |
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
@@ -52,7 +57,7 @@ export class RegisterComponent implements OnInit {
     { label: 'Médico', value: 'médico' }
   ];
 
-  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private router: Router, private authService: AuthService, private messageService: MessageService) {
     this.registerForm = this.fb.group({
   email: ['', [Validators.required, Validators.email]],
   rol: ['', Validators.required],
@@ -101,30 +106,57 @@ onRolChange(value: string): void {
 }
 
 
-  private registrarUsuario(payload: any): void {
-    this.authService.register(payload).subscribe({
-      next: () => {
-        alert('¡Registro exitoso!');
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        console.error('Error en el registro:', err);
-        alert(err.error?.message || 'Error durante el registro');
-      }
-    });
-  }
-
-  onSubmit(): void {
-    if (this.registerForm.valid) {
-      const formValue = { ...this.registerForm.value };
-
-      // Si no es médico, no mandar especialidad
-      if (formValue.rol !== 'médico') formValue.especialidad = null;
-
-      // Si es paciente, el backend ya maneja la creación automática del paciente
-      this.registrarUsuario(formValue);
+private registrarUsuario(payload: any, email: string, password: string): void {
+  this.authService.register(payload).subscribe({
+    next: () => {
+      // ✅ Solo si el registro fue exitoso, hacemos login
+      this.authService.login({ email, password }).subscribe({
+        next: (res) => {
+          this.authService.setToken(res.access_token);
+          this.authService.setRefreshToken(res.refresh_token);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Registro exitoso',
+            detail: 'Redirigiendo a configuración MFA...',
+            life: 3000
+          });
+          setTimeout(() => this.router.navigate(['/configurar-mfa']), 1500);
+        },
+        error: (err) => {
+          console.error('Error al iniciar sesión después del registro:', err);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Login fallido',
+            detail: err.error?.message || 'No se pudo iniciar sesión automáticamente',
+            life: 4000
+          });
+        }
+      });
+    },
+    error: (err) => {
+      console.error('Error en el registro:', err);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error en el registro',
+        detail: err.error?.message || 'No se pudo completar el registro',
+        life: 4000
+      });
     }
+  });
+}
+
+
+
+onSubmit(): void {
+  if (this.registerForm.valid) {
+    const formValue = { ...this.registerForm.value };
+
+    if (formValue.rol !== 'médico') formValue.especialidad = null;
+
+    this.registrarUsuario(formValue, formValue.email, formValue.password);
   }
+}
+
 
   goToLogin(): void {
     this.router.navigate(['/login']);

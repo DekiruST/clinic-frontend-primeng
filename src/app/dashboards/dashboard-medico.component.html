@@ -1,43 +1,58 @@
+<!-- dashboartds/dashboard-medico.component.html -->
 <p-tabView>
+  <!-- Botón cerrar sesión -->
+  <button class="logout-btn" (click)="logout()">
+    <i class="pi pi-sign-out"></i> Cerrar sesión
+  </button>
+
+  <!-- Citas -->
   <p-tabPanel header="🗓️ Citas">
-    <ul *ngIf="citas.length; else noCitas">
-      <li *ngFor="let c of citas" class="mb-3">
+    <ul *ngIf="citas.length; else noCitas" class="tab-list">
+      <li *ngFor="let c of citas" class="tab-item">
         <b>{{ c.fecha | date:'short' }}</b> - {{ c.tipo }}<br />
-        <i>Paciente: {{ c.paciente }}</i>
+        <i>Paciente:</i> {{ c.paciente }}
       </li>
     </ul>
-    <ng-template #noCitas><p>No hay citas asignadas.</p></ng-template>
+    <ng-template #noCitas>
+      <p class="empty-state">No hay citas asignadas.</p>
+    </ng-template>
   </p-tabPanel>
 
+  <!-- Recetas -->
   <p-tabPanel header="💊 Recetas">
-    <ul *ngIf="recetas.length; else noRecetas">
-      <li *ngFor="let r of recetas" class="mb-4">
-        <b>Receta #{{ r.id_receta }}</b> - {{ r.fecha | date:'short' }}
-        <ul class="mt-2">
+    <ul *ngIf="recetas.length; else noRecetas" class="tab-list">
+      <li *ngFor="let r of recetas" class="tab-item">
+        <b>Receta #{{ r.id_receta }}</b> - {{ r.fecha | date:'shortDate' }}
+        <ul class="detalles-medicamento">
           <li *ngFor="let d of r.detalles">
             <span><b>{{ d.medicamento }}</b>: {{ d.dosis }}</span>
           </li>
         </ul>
       </li>
     </ul>
-    <ng-template #noRecetas><p>No hay recetas asignadas.</p></ng-template>
+    <ng-template #noRecetas>
+      <p class="empty-state">No hay recetas asignadas.</p>
+    </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="📁 Expedientes">
-    <ul *ngIf="expedientes.length; else noExpedientes">
-      <li *ngFor="let exp of expedientes" class="mb-4">
-<p-avatar 
-  [label]="exp.id_paciente.toString()" 
-  class="mr-2"
-  [style]="{ backgroundColor: '#607D8B', color: '#fff' }">
-</p-avatar>
-        <div>
-          <b>Paciente #{{ exp.id_paciente }}</b><br />
-          <b>Antecedentes:</b> {{ exp.antecedentes }}<br />
-          <b>Historial Clínico:</b> {{ exp.historial_clinico }}
-        </div>
-      </li>
-    </ul>
-    <ng-template #noExpedientes><p>No hay expedientes disponibles.</p></ng-template>
-  </p-tabPanel>
+  <!-- Expedientes -->
+<p-tabPanel header="📁 Expedientes">
+  <ul *ngIf="expedientes.length; else noExpedientes" class="tab-list">
+    <li *ngFor="let exp of expedientes" class="tab-item">
+      <p-avatar 
+        [label]="exp.id_paciente.toString()" 
+        [style]="{ backgroundColor: '#607D8B', color: '#fff' }">
+      </p-avatar>
+      <div>
+        <b>Paciente #{{ exp.id_paciente }}</b>
+        <span><b>Antecedentes:</b> {{ exp.antecedentes || 'No registrados' }}</span><br />
+        <span><b>Historial Clínico:</b> {{ exp.historial_clinico || 'No registrado' }}</span>
+      </div>
+    </li>
+  </ul>
+  <ng-template #noExpedientes>
+    <p class="empty-state">No hay expedientes disponibles.</p>
+  </ng-template>
+</p-tabPanel>
+
 </p-tabView>

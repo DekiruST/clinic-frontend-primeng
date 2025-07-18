@@ -1,38 +1,51 @@
 :host {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f0f2f5;
+  justify-content: center;
+  height: 100vh; /* Centrado vertical */
+  background-color: #f5f7fa;
 }
 
+/* Card personalizado */
 .login-card {
   width: 100%;
   max-width: 420px;
-  padding: 2rem;
-  background: #ffffff;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background: white;
 }
 
-.field {
-  margin-bottom: 1rem;
-}
-
+/* Etiquetas */
 label {
-  font-weight: 500;
-  margin-bottom: 0.5rem;
   display: block;
+  margin: 0.75rem 0 0.25rem;
+  font-weight: 600;
+  color: #37474F;
 }
 
-input {
+/* Inputs */
+input, .p-password input {
   width: 100%;
-}
-.mt-3 {
-  margin-top: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
+/* Errores */
 .text-red-500 {
-  color: #ef4444; 
+  color: #f44336;
   font-size: 0.875rem;
+  margin-top: 0.2rem;
+}
+:host ::ng-deep .p-button + .p-button {
+  margin-top: 0.5rem; /* separa botones que están seguidos */
+}
+.toast-wrapper {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
 }
